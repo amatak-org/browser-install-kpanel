@@ -37,7 +37,7 @@ exec(`git clone ${repoUrl} temp-clone`, (error, stdout, stderr) => {
     });
 
     // Run install.js
-    exec('node /var/www/html/install.js', (error, stdout, stderr) => {
+    exec('node install.js', (error, stdout, stderr) => {
       if (error) {
         console.error(`Error running install.js: ${error}`);
         return;
