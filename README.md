@@ -1,4 +1,7 @@
 # browser-install-kpanel
-- git clone https://github.com/amatak-org/install-from-browser.git
-- cd install-from-browser
-- node install.js
+1- sudo apt install nodejs  
+2- git clone https://github.com/amatak-org/install-from-browser.git
+3- cd install-from-browser
+4- node install.js
+
+# Fun to start your prject
