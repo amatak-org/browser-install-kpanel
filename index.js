@@ -24,7 +24,7 @@
                 'sudo apt install nodejs',
                 'git clone https://github.com/amatak-org/kpanel_fresh.git',
                 ' cd kpanel_fresh',
-                'sudo node install.js'
+                'sudo node install.js',
                 'sudo python3 kpanel_install.py'
             ];
 
