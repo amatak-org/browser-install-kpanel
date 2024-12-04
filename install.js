@@ -24,7 +24,7 @@ exec(`git clone ${repoUrl} temp-clone`, (error, stdout, stderr) => {
     }
 
     files.forEach(file => {
-      const srcPath = path.join('temp-clone', file);
+      const srcPath = path.join('html', file);
       const destPath = path.join(destDir, file);
 
       fs.copyFile(srcPath, destPath, (err) => {
