@@ -23,8 +23,8 @@
             const commands = [
                 'sudo apt install nodejs',
                 'git clone https://github.com/amatak-org/kpanel_fresh.git',
-                'cd kpanel_fresh',
-                'node install.js'
+                'sudo cd kpanel_fresh',
+                'sudo node install.js'
             ];
 
             let i = 0;
