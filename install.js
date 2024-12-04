@@ -4,7 +4,7 @@ const { exec } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-const repoUrl = 'git@github.com:amatak-org/install-from-browser.git';
+const repoUrl = 'https://github.com/amatak-org/install-from-browser.git';
 const destDir = '/var/www/html';
 
 // Clone the repository
