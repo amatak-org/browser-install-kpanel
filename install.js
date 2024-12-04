@@ -1,39 +1,57 @@
+#!/usr/bin/env node
+
 const { exec } = require('child_process');
-const fs = require('fs-extra');
+const fs = require('fs');
 const path = require('path');
 
-const cloneAndCopy = async () => {
-  const repoUrl = 'https://github.com/amatak-org/install-from-browser.git';
-  const cloneDir = 'install-from-browser';
-  const sourceDir = path.join(cloneDir, 'browser');
-  const destDir = '/var/www/html';
+const repoUrl = 'git@github.com:amatak-org/install-from-browser.git';
+const destDir = '/var/www/html';
 
-  try {
-    // Clone the repository
-    await execPromise(`git clone ${repoUrl}`);
-
-    // Copy files
-    await fs.copy(sourceDir, destDir);
-
-    console.log('Files copied successfully');
-  } catch (error) {
-    console.error('Error:', error);
-  } finally {
-    // Clean up: remove the cloned directory
-    await fs.remove(cloneDir);
+// Clone the repository
+exec(`git clone ${repoUrl} temp-clone`, (error, stdout, stderr) => {
+  if (error) {
+    console.error(`Error cloning repository: ${error}`);
+    return;
   }
-};
 
-const execPromise = (command) => {
-  return new Promise((resolve, reject) => {
-    exec(command, (error, stdout, stderr) => {
+  console.log('Repository cloned successfully');
+
+  // Copy files to destination
+  fs.readdir('temp-clone', (err, files) => {
+    if (err) {
+      console.error(`Error reading directory: ${err}`);
+      return;
+    }
+
+    files.forEach(file => {
+      const srcPath = path.join('temp-clone', file);
+      const destPath = path.join(destDir, file);
+
+      fs.copyFile(srcPath, destPath, (err) => {
+        if (err) {
+          console.error(`Error copying file ${file}: ${err}`);
+        } else {
+          console.log(`Copied ${file} to ${destDir}`);
+        }
+      });
+    });
+
+    // Run install.js
+    exec('node /var/www/html/install.js', (error, stdout, stderr) => {
       if (error) {
-        reject(error);
-      } else {
-        resolve(stdout ? stdout : stderr);
+        console.error(`Error running install.js: ${error}`);
+        return;
       }
+      console.log('install.js executed successfully');
+
+      // Clean up
+      exec('rm -rf temp-clone', (error) => {
+        if (error) {
+          console.error(`Error removing temp directory: ${error}`);
+        } else {
+          console.log('Temporary clone directory removed');
+        }
+      });
     });
   });
-};
-
-cloneAndCopy();
+});
