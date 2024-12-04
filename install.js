@@ -2,35 +2,38 @@ const { exec } = require('child_process');
 const fs = require('fs-extra');
 const path = require('path');
 
-function cloneAndCopy() {
+const cloneAndCopy = async () => {
   const repoUrl = 'https://github.com/amatak-org/install-from-browser.git';
-  const tempDir = path.join(__dirname, 'temp');
-  const browserDir = path.join(tempDir, 'install-from-browser', 'browser');
+  const cloneDir = 'install-from-browser';
+  const sourceDir = path.join(cloneDir, 'browser');
   const destDir = '/var/www/html';
 
-  // Clone the repository
-  exec(`git clone ${repoUrl} ${tempDir}`, (error) => {
-    if (error) {
-      console.error(`Error cloning repository: ${error}`);
-      return;
-    }
+  try {
+    // Clone the repository
+    await execPromise(`git clone ${repoUrl}`);
 
-    // Copy files from browser directory to destination
-    fs.copy(browserDir, destDir, (err) => {
-      if (err) {
-        console.error(`Error copying files: ${err}`);
+    // Copy files
+    await fs.copy(sourceDir, destDir);
+
+    console.log('Files copied successfully');
+  } catch (error) {
+    console.error('Error:', error);
+  } finally {
+    // Clean up: remove the cloned directory
+    await fs.remove(cloneDir);
+  }
+};
+
+const execPromise = (command) => {
+  return new Promise((resolve, reject) => {
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        reject(error);
       } else {
-        console.log('Files copied successfully');
+        resolve(stdout ? stdout : stderr);
       }
-
-      // Clean up temporary directory
-      fs.remove(tempDir, (removeErr) => {
-        if (removeErr) {
-          console.error(`Error removing temp directory: ${removeErr}`);
-        }
-      });
     });
   });
-}
+};
 
 cloneAndCopy();
