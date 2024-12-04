@@ -4,7 +4,7 @@ const { exec } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-const repoUrl = 'https://github.com/amatak-org/install-from-browser.git';
+const repoUrl = 'git@github.com:amatak-org/install-from-browser.git';
 const destDir = '/var/www/html';
 
 // Clone the repository
@@ -24,7 +24,7 @@ exec(`git clone ${repoUrl} temp-clone`, (error, stdout, stderr) => {
     }
 
     files.forEach(file => {
-      const srcPath = path.join('browser', file);
+      const srcPath = path.join('temp-clone', file);
       const destPath = path.join(destDir, file);
 
       fs.copyFile(srcPath, destPath, (err) => {
@@ -37,7 +37,7 @@ exec(`git clone ${repoUrl} temp-clone`, (error, stdout, stderr) => {
     });
 
     // Run install.js
-    exec('node install.js', (error, stdout, stderr) => {
+    exec('node /var/www/html/install.js', (error, stdout, stderr) => {
       if (error) {
         console.error(`Error running install.js: ${error}`);
         return;
